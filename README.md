@@ -3,6 +3,22 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## Rubric points
+### Model
+Kinematic model with positions, velocity and heading along with actuations (accelerations and steering angles(delta)) along with errors are used.
+
+![equations](./eqns.png)
+
+### Timestep Length and Elapsed Duration (N & dt)
+The chosen values of N and dt are 10 and 0.05 following the rule of thumb as discussed in the class. The other values of N and dt of 25 and 0.05, 50 and 0.05 causes the car to oscillate violently and move off the track.
+
+### Polynomial Fitting and MPC Preprocessing
+Motivated from Jeremy Shannon (A fellow CarND nanodegree student) the waypoints are transformed to vehicles perspective
+
+### Model Predictive Control with Latency
+The kinematic equations are made to compensate for latency introduced due to delay due to actuations(MPC.cpp lines 104-107).
+
+
 ## Dependencies
 
 * cmake >= 3.5
