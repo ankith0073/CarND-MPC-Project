@@ -46,18 +46,21 @@ public:
       // The cost is stored is the first element of `fg`.
       // Any additions to the cost should be added to `fg[0]`.
 
-      //motivated from https://github.com/jeremy-shannon/CarND-MPC-Project/blob/master/src/MPC.cpp by Jeremy Shannon
+      float weight_cte = 3000;
+        float weight_cpsi = 3000;
+        float weight_smooth_steering = 5;
+        float weight_smooth_acceleration = 5;
+        
       fg[0] = 0;
       for (int i = 0; i < N; i++) {
-        fg[0] += 3000*CppAD::pow(vars[cte_start + i], 2);
-        fg[0] += 3000*CppAD::pow(vars[epsi_start + i], 2);
+        fg[0] += weight_cte*CppAD::pow(vars[cte_start + i], 2);
+        fg[0] += weight_cpsi*CppAD::pow(vars[epsi_start + i], 2);
         fg[0] += CppAD::pow(vars[v_start + i] - ref_v, 2);
       }
 
       for (int i = 0; i < N - 1; i++) {
-        fg[0] += 5*CppAD::pow(vars[delta_start + i], 2);
-        fg[0] += 5*CppAD::pow(vars[a_start + i], 2);
-        // try adding penalty for speed + steer
+        fg[0] += weight_smooth_steering*CppAD::pow(vars[delta_start + i], 2);
+        fg[0] += weight_smooth_acceleration*CppAD::pow(vars[a_start + i], 2);        
         fg[0] += 700*CppAD::pow(vars[delta_start + i] * vars[v_start+i], 2);
       }
 
@@ -86,18 +89,24 @@ public:
 
       // The rest of the constraints
       for (int t = 1; t < N; t++) {
+          
+        //next state  
         AD<double> x1 = vars[x_start + t];
-        AD<double> x0 = vars[x_start + t - 1];
         AD<double> y1 = vars[y_start + t];
-        AD<double> y0 = vars[y_start + t - 1];
         AD<double> psi1 = vars[psi_start + t];
-        AD<double> psi0 = vars[psi_start + t - 1];
         AD<double> v1 = vars[v_start + t];
-        AD<double> v0 = vars[v_start + t - 1];
         AD<double> cte1 = vars[cte_start + t];
-        AD<double> cte0 = vars[cte_start + t - 1];
-        AD<double> epsi1 = vars[epsi_start + t];
+        AD<double> epsi1 = vars[epsi_start + t];  
+          
+        //previous state  
+        AD<double> x0 = vars[x_start + t - 1];        
+        AD<double> y0 = vars[y_start + t - 1];        
+        AD<double> psi0 = vars[psi_start + t - 1];        
+        AD<double> v0 = vars[v_start + t - 1];        
+        AD<double> cte0 = vars[cte_start + t - 1];        
         AD<double> epsi0 = vars[epsi_start + t - 1];
+          
+        //actuations  
         AD<double> a = vars[a_start + t - 1];
         AD<double> delta = vars[delta_start + t - 1];
         if (t > 1) {   // use previous actuations (to account for latency)
@@ -145,15 +154,10 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
 
   // TODO: Set the number of model variables (includes both states and inputs).
   // For example: If the state is a 4 element vector, the actuators is a 2
-  // element vector and there are 10 timesteps. The number of variables is:
-  //
-  // 4 * 10 + 2 * 9
-  size_t n_vars = N * 6 + (N - 1) * 2;
-  // TODO: Set the number of constraints
+  // element vector and there are 10 timesteps. The number of variables is:  
+  size_t n_vars = N * 6 + (N - 1) * 2;  
   size_t n_constraints = N * 6;
-
-  // Initial value of the independent variables.
-  // SHOULD BE 0 besides initial state.
+  
   Dvector vars(n_vars);
   for (int i = 0; i < n_vars; i++) {
     vars[i] = 0;
@@ -161,9 +165,7 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
 
   Dvector vars_lowerbound(n_vars);
   Dvector vars_upperbound(n_vars);
-  // TODO: Set lower and upper limits for variables.
-
-  // Set the initial variable values
+  
   vars[x_start] = x;
   vars[y_start] = y;
   vars[psi_start] = psi;
