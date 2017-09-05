@@ -104,9 +104,7 @@ int main() {
             vector<double> wypts_x;
             vector<double> wypts_y;
 
-            // transform waypoints to be from car's perspective
-            // this means we can consider px = 0, py = 0, and psi = 0
-            // greatly simplifying future calculations
+           //waypoints preprocessing or transformation
             for (unsigned int i = 0; i < ptsx.size(); i++) {
                 double dx = ptsx[i] - px;
                 double dy = ptsy[i] - py;
@@ -144,8 +142,7 @@ int main() {
           vector<double> mpc_x_vals;
           vector<double> mpc_y_vals;
 
-          //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
-          // the points in the simulator are connected by a Green line
+          //.. add (x,y) points to list here
 
             for (unsigned int i = 2; i < vars.size(); i ++) {
                 if (i%2 == 0) {
