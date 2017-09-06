@@ -10,13 +10,15 @@ Kinematic model with positions, velocity and heading along with actuations (acce
 ![equations](./eqns.png)
 
 ### Timestep Length and Elapsed Duration (N & dt)
-The chosen values of N and dt are 10 and 0.05 following the rule of thumb as discussed in the class. The other values of N and dt of 25 and 0.05, 50 and 0.05 causes the car to oscillate violently and move off the track.
+The values for N and dt are chosen according to the thumb of high sampling rate of dt and larger prediction horizon N. N is kept to be a tradeoff between larger prediction horizon and computational time. 
+The chosen values of N and dt are 10 and 0.1 following the rule of thumb as discussed in the class. The other values of N and dt of 25 and 0.05, 50 and 0.05 causes the car to oscillate violently and move off the track. The design values of 10 and 0.05 makes the car coming to a halt at sharp corners!
 
 ### Polynomial Fitting and MPC Preprocessing
 The waypoints are transformed into vehicles perspectives. i.e assuming the vehicle is the center of the current coordinate system
 
 ### Model Predictive Control with Latency
-The kinematic equations are made to compensate for latency introduced due to delay due to actuations(MPC.cpp lines 104-107).
+Lines 104-107 simulate the latency of 100ms which is one timestep! which takes care of the latency issue of the MPC controller.
+The kinematic equations are made to compensate for latency introduced due to delay due to actuations.
 
 
 ## Dependencies
