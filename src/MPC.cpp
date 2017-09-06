@@ -7,7 +7,7 @@ using CppAD::AD;
 
 // TODO: Set the timestep length and duration
 size_t N = 10;
-double dt = 0.05;
+double dt = 0.1;
 
 // This value assumes the model presented in the classroom is used.
 //
@@ -61,7 +61,7 @@ public:
       for (int i = 0; i < N - 1; i++) {
         fg[0] += weight_smooth_steering*CppAD::pow(vars[delta_start + i], 2);
         fg[0] += weight_smooth_acceleration*CppAD::pow(vars[a_start + i], 2);        
-        fg[0] += 700*CppAD::pow(vars[delta_start + i] * vars[v_start+i], 2);
+        fg[0] += 300*CppAD::pow(vars[delta_start + i] * vars[v_start+i], 2);
       }
 
       for (int i = 0; i < N - 2; i++) {
